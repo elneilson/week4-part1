@@ -8,3 +8,50 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+## 1. Confidence intervals
+
+```{r}
+otter_length <- c(38, 41, 50, 27, 32, 41, 48, 60, 43)
+
+t.test(otter_length)
+```
+Interpretation: "The mean length of sea otters (n = x) is 42.22 inches with a SD of x. 95% interval is 34.7 - 49.8 inches"
+
+## T-test (1-sample  t-test)
+
+POV - You see the claim: "mean otter length is 50 inches".
+I will use my sample to test this claim!
+
+```{r}
+otter_test <- t.test(x = otter_length, mu = 50)
+otter_test
+```
+This tells us: "If the population mean really is 50 inches, then there is a 4.44% chance that I could have randomly taken a sample from that population that has a mean that is at least as different from 50 inches as my sample mean is in either direction."
+
+Do not think of the p-value as significant or not!
+Interesting thing to consider is how different the mean is from the claim of 50 inches.
+
+Ask: Is it possible that my sample was drawn from a population that has a mean of 50 inches? Yes it's possible, but not probable (4.44% chance).
+
+Are differences in the two sample means so different that I actually think they were drawn from populations with different means?
+
+## Two-sample t-test
+
+```{r}
+desert_bighorns <- c(32, 44, 18, 26, 50, 33, 42, 20)
+sierra_bighorns <- c(28, 31, 40, 42, 26, 29, 31)
+
+t.test(x = desert_bighorns, y = sierra_bighorns)
+```
+This test does not assume equal variance ^
+
+CI can be negative because y-x, x-y
+We expect the difference in mean horn length between species to be within the CI range for 95% of the samples that we took <--- this info is less meaningful in this case!
+
+P-value is a probability - It tells me that if these samples are drawn from populations with the same mean horn length (null hypothesis), then there is almost a 90% chance that I could have taken two random samples from those populations and found samples at least as different as the samples that I have here.
+
+This tells me that there is a really GOOD chance that I could have retrieved my samples from populations with the same mean.
+
+Conclusion: I do not think I have enough evidence to reject the null hypothesis.
+
