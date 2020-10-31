@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
 ```
 
 ## 1. Confidence intervals
@@ -55,3 +56,62 @@ This tells me that there is a really GOOD chance that I could have retrieved my 
 
 Conclusion: I do not think I have enough evidence to reject the null hypothesis.
 
+## END PART 1
+
+## Part 2: Two-sample t-test
+
+```{r}
+compact_suv <- mpg %>%
+  filter(class %in% c("compact", "suv"))
+```
+
+## Exploratory data visualization
+
+Exploratory histograms:
+```{r}
+ggplot(data = compact_suv, aes(x = cty)) +
+  geom_histogram(bins = 15) +
+  facet_wrap(~class)
+```
+No major concerns with histograms!
+
+## Quantile-quantile plot
+
+```{r}
+ggplot(data = compact_suv, aes(sample = cty)) +
+  geom_qq() +
+  facet_wrap(~class)
+```
+No major concerns about distribution overall. Possible positive skew in compact cars.
+
+## Descriptive statistics
+
+```{r}
+car_stats <- compact_suv %>%
+  group_by(class) %>% 
+  summarize(mean_city = mean(cty),
+            sd_city = sd(cty),
+            n = n())
+car_stats
+```
+## 2-sample t-test
+
+Create vectors containing observations for each sample (city gas mileage)
+
+```{r}
+compact_sample <- compact_suv %>%
+  filter(class == "compact") %>%
+  pull(cty)
+
+suv_sample <- compact_suv %>%
+  filter(class == "suv") %>%
+  pull(cty)
+
+t.test(x = compact_sample, suv_sample)
+```
+
+Null: drawn from populations with same exact mean
+
+Close to 0% chance of randomly drawing means...
+
+Conclusion: samples *WERE* drawn from populations with different means.
